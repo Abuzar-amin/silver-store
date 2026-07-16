@@ -10,7 +10,7 @@ export default function Navbar() {
             href="/"
             className="text-xl font-semibold tracking-wide"
           >
-            Silver Store
+            Silver Spot
           </Link>
 
           <div className="flex items-center gap-8">
