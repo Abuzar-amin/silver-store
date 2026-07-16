@@ -1,38 +1,118 @@
 export interface Product {
   id: number;
+  slug: string;
   name: string;
+  description: string;
+  category: "rings" | "necklaces" | "bracelets" | "earrings";
+  material: string;
   price: number;
-  image: string;
+  images: string[];
   featured: boolean;
+  inStock: boolean;
+  features: string[];
+  shipping: string;
+  returns: string;
 }
 
 export const products: Product[] = [
   {
     id: 1,
+    slug: "crystal-silver-ring",
     name: "Crystal Silver Ring",
+    description: "Elegant sterling silver ring crafted for everyday wear.",
+    category: "rings",
+    material: "925 Sterling Silver",
     price: 1799,
-    image: "/images/products/ring-1.png",
+    images: [
+      "/images/products/ring-1.png",
+      "/images/products/ring-1.png",
+      "/images/products/ring-1.png",
+      "/images/products/ring-1.png",
+    ],
     featured: true,
+    inStock: true,
+    features: [
+      "Hypoallergenic",
+      "Tarnish Resistant",
+      "Free Gift Box",
+      "30-Day Exchange",
+    ],
+    shipping: "Free Delivery",
+    returns: "30-Day Returns",
   },
   {
     id: 2,
+    slug: "butterfly-pendant",
     name: "Butterfly Pendant",
+    description: "Minimal butterfly pendant with a timeless design.",
+    category: "necklaces",
+    material: "925 Sterling Silver",
     price: 1999,
-    image: "/images/products/necklace-1.png",
+    images: [
+      "/images/products/necklace-1.png",
+      "/images/products/necklace-1.png",
+      "/images/products/necklace-1.png",
+      "/images/products/necklace-1.png",
+    ],
     featured: true,
+    inStock: true,
+    features: [
+      "Hypoallergenic",
+      "Tarnish Resistant",
+      "Free Gift Box",
+      "30-Day Exchange",
+    ],
+    shipping: "Free Delivery",
+    returns: "30-Day Returns",
   },
   {
     id: 3,
+    slug: "silver-grace-bracelet",
     name: "Silver Grace Bracelet",
+    description: "Elegant sterling silver bracelet for everyday styling.",
+    category: "bracelets",
+    material: "925 Sterling Silver",
     price: 2299,
-    image: "/images/products/bracelet-1.png",
+    images: [
+      "/images/products/bracelet-1.png",
+      "/images/products/bracelet-1.png",
+      "/images/products/bracelet-1.png",
+      "/images/products/bracelet-1.png",
+    ],
     featured: true,
+    inStock: true,
+    features: [
+      "Hypoallergenic",
+      "Tarnish Resistant",
+      "Free Gift Box",
+      "30-Day Exchange",
+    ],
+    shipping: "Free Delivery",
+    returns: "30-Day Returns",
   },
   {
     id: 4,
+    slug: "star-hoop-earrings",
     name: "Star Hoop Earrings",
+    description: "Classic sterling silver earrings with a modern finish.",
+    category: "earrings",
+    material: "925 Sterling Silver",
     price: 1499,
-    image: "/images/products/earrings-1.png",
+    images: [
+      "/images/products/earrings-1.png",
+      "/images/products/earrings-1.png",
+      "/images/products/earrings-1.png",
+      "/images/products/earrings-1.png",
+    ],
     featured: true,
+    inStock: true,
+    features: [
+      "Hypoallergenic",
+      "Tarnish Resistant",
+      "Free Gift Box",
+      "30-Day Exchange",
+    ],
+    shipping: "Free Delivery",
+    returns: "30-Day Returns",
   },
 ];

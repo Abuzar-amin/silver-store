@@ -8,7 +8,9 @@ export default function ShopPage() {
   return (
     <main>
       <ShopHeader />
+
       <CategoryFilter />
+
       <ProductGrid products={products} />
     </main>
   );

@@ -15,12 +15,12 @@ export default function Button({
     "inline-flex items-center justify-center rounded-xl px-7 py-3 text-sm font-medium transition-colors duration-200";
 
   const variants = {
-    primary:
-      "bg-gray-900 text-white hover:bg-gray-800",
+  primary:
+    "bg-gray-900 text-white hover:bg-black",
 
-    secondary:
-      "border border-gray-300 bg-white text-gray-900 hover:bg-gray-100",
-  };
+  secondary:
+    "border border-gray-300 bg-white text-gray-900 hover:border-gray-500 hover:bg-gray-50",
+};
 
   return (
     <Link

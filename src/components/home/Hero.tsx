@@ -39,7 +39,7 @@ export default function Hero() {
 
           {/* Right Image */}
           <div className="relative mx-auto w-full max-w-xl">
-            <div className="overflow-hidden rounded-3xl">
+            <div className="overflow-hidden rounded-3xl shadow-xl ring-1 ring-gray-200">
               <Image
                 src="/images/hero/hero.png"
                 alt="Sterling silver jewellery"
