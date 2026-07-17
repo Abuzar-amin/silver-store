@@ -1,8 +1,7 @@
 import Container from "@/components/layout/Container";
 import ProductCard from "@/components/product/ProductCard";
 
-import { products } from "@/data/products";
-
+import { getFeaturedProducts } from "@/lib/products";
 export default function FeaturedCollection() {
   const featuredProducts = products.filter(
     (product) => product.featured

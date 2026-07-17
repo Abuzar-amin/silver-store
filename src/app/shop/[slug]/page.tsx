@@ -5,8 +5,7 @@ import ProductGallery from "@/components/product/ProductGallery";
 import ProductFeatures from "@/components/product/ProductFeatures";
 import Button from "@/components/ui/Button";
 
-import { products } from "@/data/products";
-
+import { getProductBySlug } from "@/lib/products";
 interface ProductPageProps {
   params: Promise<{
     slug: string;
@@ -18,9 +17,7 @@ export default async function ProductPage({
 }: ProductPageProps) {
   const { slug } = await params;
 
-  const product = products.find(
-    (product) => product.slug === slug
-  );
+const product = getProductBySlug(slug);
 console.log("PRODUCT OBJECT");
 console.log(product);
   if (!product) {

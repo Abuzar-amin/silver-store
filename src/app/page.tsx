@@ -2,14 +2,16 @@ import ShopHeader from "@/components/shop/ShopHeader";
 import CategoryFilter from "@/components/shop/CategoryFilter";
 import ProductGrid from "@/components/shop/ProductGrid";
 
-import { products } from "@/data/products";
+import { getFeaturedProducts } from "@/lib/products";
 
 export default function ShopPage() {
+  const featuredProducts = getFeaturedProducts();
+
   return (
     <main>
       <ShopHeader />
       <CategoryFilter />
-      <ProductGrid products={products} />
+      <ProductGrid products={featuredProducts} />
     </main>
   );
 }
