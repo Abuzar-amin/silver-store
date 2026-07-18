@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Product } from "@/data/products";
-
+import type { Product } from "@/types/products";
 interface ProductCardProps {
   product: Product;
 }

@@ -5,7 +5,7 @@ import ProductGallery from "@/components/product/ProductGallery";
 import ProductFeatures from "@/components/product/ProductFeatures";
 import Button from "@/components/ui/Button";
 
-import { getProductBySlug } from "@/lib/products";
+import { getProductBySlug } from "@/lib/productRepository";
 interface ProductPageProps {
   params: Promise<{
     slug: string;
@@ -17,9 +17,8 @@ export default async function ProductPage({
 }: ProductPageProps) {
   const { slug } = await params;
 
-const product = getProductBySlug(slug);
-console.log("PRODUCT OBJECT");
-console.log(product);
+const product = await getProductBySlug(slug);
+
   if (!product) {
     notFound();
   }
@@ -73,7 +72,7 @@ console.log(product);
                 {product.inStock ? "In Stock" : "Out of Stock"}
               </span>
             </div>
-console.log(JSON.stringify(product, null, 2));            <ProductFeatures
+            <ProductFeatures
               features={product.features}
               shipping={product.shipping}
               returns={product.returns}

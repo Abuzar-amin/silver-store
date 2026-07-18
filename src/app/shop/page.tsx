@@ -3,14 +3,8 @@ import CategoryFilter from "@/components/shop/CategoryFilter";
 import ProductGrid from "@/components/shop/ProductGrid";
 import ShopToolbar from "@/components/shop/ShopToolbar";
 
-import {
-  getAllProducts,
-  getProductsByCategory,
-  searchProducts,
-  sortProducts,
-} from "@/lib/products";
-
-import { Product } from "@/data/products";
+import { getProducts } from "@/lib/productRepository";
+import type { Product } from "@/types/products";
 
 interface ShopPageProps {
   searchParams: Promise<{
@@ -32,31 +26,20 @@ export default async function ShopPage({
 }: ShopPageProps) {
   const { category, search, sort } = await searchParams;
 
-  let products = getAllProducts();
-
-  if (
-    category &&
-    VALID_CATEGORIES.includes(category as Product["category"])
-  ) {
-    products = getProductsByCategory(category as Product["category"]);
-  }
-
-  if (search) {
-    products = searchProducts(products, search);
-  }
-
-  if (sort) {
-    products = sortProducts(products, sort);
-  }
+  const products = await getProducts({
+    category:
+      category && VALID_CATEGORIES.includes(category as Product["category"])
+        ? (category as Product["category"])
+        : undefined,
+    search,
+    sort,
+  });
 
   return (
     <main>
       <ShopHeader />
-
       <CategoryFilter activeCategory={category} />
-
       <ShopToolbar />
-
       <ProductGrid products={products} />
     </main>
   );

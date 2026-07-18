@@ -1,8 +1,7 @@
 import Container from "@/components/layout/Container";
 import ProductCard from "@/components/product/ProductCard";
 
-import { Product } from "@/data/products";
-
+import type { Product } from "@/types/products";
 interface ProductGridProps {
   products: Product[];
 }
