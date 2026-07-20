@@ -64,6 +64,10 @@ export async function getProducts(
   return data.map(mapProduct);
 }
 
+export async function getAllProducts(): Promise<Product[]> {
+  return getProducts();
+}
+
 export async function getFeaturedProducts(): Promise<Product[]> {
   const supabase = await createClient();
 

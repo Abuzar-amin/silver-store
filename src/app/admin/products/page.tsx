@@ -1,9 +1,8 @@
 import Link from "next/link";
 
-import { getAllProducts } from "@/lib/products";
-
-export default function ProductsPage() {
-  const products = getAllProducts();
+import { getAllProducts } from "@/lib/productRepository";
+export default async function ProductsPage() {
+    const products = await getAllProducts();
 
   return (
     <>

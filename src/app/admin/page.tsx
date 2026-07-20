@@ -1,9 +1,7 @@
 import DashboardCard from "@/components/admin/DashboardCard";
-import { getAllProducts } from "@/lib/products";
-
-export default function AdminPage() {
-  const products = getAllProducts();
-
+import { getAllProducts } from "@/lib/productRepository";
+export default async function AdminPage() {
+  const products = await getAllProducts();
   return (
     <>
       <h2 className="mb-8 text-3xl font-bold">
