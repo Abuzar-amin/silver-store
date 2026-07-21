@@ -22,24 +22,27 @@ export default async function ProductsPage() {
       <div className="overflow-hidden rounded-xl border bg-white">
         <table className="w-full">
           <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-left">
-                Product
-              </th>
-              <th className="px-6 py-4 text-left">
-                Category
-              </th>
-              <th className="px-6 py-4 text-left">
-                Price
-              </th>
-              <th className="px-6 py-4 text-left">
-                Featured
-              </th>
-              <th className="px-6 py-4 text-left">
-                Stock
-              </th>
-            </tr>
-          </thead>
+  <tr>
+    <th className="px-6 py-4 text-left">
+      Product
+    </th>
+    <th className="px-6 py-4 text-left">
+      Category
+    </th>
+    <th className="px-6 py-4 text-left">
+      Price
+    </th>
+    <th className="px-6 py-4 text-left">
+      Featured
+    </th>
+    <th className="px-6 py-4 text-left">
+      Stock
+    </th>
+    <th className="px-6 py-4 text-left">
+      Actions
+    </th>
+  </tr>
+</thead>
 
           <tbody>
             {products.map((product) => (
@@ -68,6 +71,14 @@ export default async function ProductsPage() {
                     ? "In Stock"
                     : "Out of Stock"}
                 </td>
+                <td className="px-6 py-4">
+  <Link
+    href={`/admin/products/${product.id}/edit`}
+    className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+  >
+    Edit
+  </Link>
+</td>
               </tr>
             ))}
           </tbody>

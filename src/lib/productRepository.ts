@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/types/products";
-
+import type { ProductInput } from "@/types/product-input";
 function mapProduct(row: any): Product {
   return {
     id: row.id,
@@ -18,7 +18,13 @@ function mapProduct(row: any): Product {
     returns: row.returns,
   };
 }
-
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 interface GetProductsOptions {
   category?: Product["category"];
   search?: string;
@@ -95,4 +101,89 @@ export async function getProductBySlug(
   if (error) return null;
 
   return mapProduct(data);
+}
+export async function getProductById(
+  id: number
+): Promise<Product | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) return null;
+
+  return mapProduct(data);
+}
+export async function createProduct(
+  product: ProductInput
+): Promise<Product> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("products")
+    .insert({
+      name: product.name,
+      slug: slugify(product.name),
+      description: product.description,
+      category: product.category,
+      material: product.material,
+      price: product.price,
+      featured: product.featured,
+      in_stock: product.inStock,
+      image_urls: product.images,
+      features: product.features,
+      shipping: product.shipping,
+      returns: product.returns,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return mapProduct(data);
+}
+export async function updateProduct(
+  id: number,
+  product: ProductInput
+): Promise<Product> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("products")
+    .update({
+      name: product.name,
+      slug: slugify(product.name),
+      description: product.description,
+      category: product.category,
+      material: product.material,
+      price: product.price,
+      featured: product.featured,
+      in_stock: product.inStock,
+      image_urls: product.images,
+      features: product.features,
+      shipping: product.shipping,
+      returns: product.returns,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return mapProduct(data);
+}
+export async function deleteProduct(
+  id: number
+): Promise<void> {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("products")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
 }
