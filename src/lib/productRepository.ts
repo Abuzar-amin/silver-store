@@ -1,13 +1,20 @@
-import { createClient } from "@/lib/supabase/server";
+import type {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/types/database";import { createClient } from "@/lib/supabase/server";
 import type { Product } from "@/types/products";
-import type { ProductInput } from "@/types/product-input";
-function mapProduct(row: any): Product {
+import type { ProductInput } from "@/lib/validation/product";
+type ProductRow = Tables<"products">;
+type ProductInsert = TablesInsert<"products">;
+type ProductUpdate = TablesUpdate<"products">;
+function mapProduct(row: ProductRow): Product {
   return {
     id: row.id,
     slug: row.slug,
     name: row.name,
     description: row.description,
-    category: row.category,
+    category: row.category as Product["category"],
     material: row.material,
     price: row.price,
     images: row.image_urls,
@@ -24,6 +31,22 @@ function slugify(text: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+function toDatabaseProduct(product: ProductInput): ProductInsert {
+  return {
+    name: product.name,
+    slug: slugify(product.name),
+    description: product.description,
+    category: product.category,
+    material: product.material,
+    price: product.price,
+    featured: product.featured,
+    in_stock: product.inStock,
+    image_urls: product.images,
+    features: product.features,
+    shipping: product.shipping,
+    returns: product.returns,
+  };
 }
 interface GetProductsOptions {
   category?: Product["category"];
@@ -124,20 +147,7 @@ export async function createProduct(
 
   const { data, error } = await supabase
     .from("products")
-    .insert({
-      name: product.name,
-      slug: slugify(product.name),
-      description: product.description,
-      category: product.category,
-      material: product.material,
-      price: product.price,
-      featured: product.featured,
-      in_stock: product.inStock,
-      image_urls: product.images,
-      features: product.features,
-      shipping: product.shipping,
-      returns: product.returns,
-    })
+    .insert(toDatabaseProduct(product))
     .select()
     .single();
 
@@ -153,20 +163,7 @@ export async function updateProduct(
 
   const { data, error } = await supabase
     .from("products")
-    .update({
-      name: product.name,
-      slug: slugify(product.name),
-      description: product.description,
-      category: product.category,
-      material: product.material,
-      price: product.price,
-      featured: product.featured,
-      in_stock: product.inStock,
-      image_urls: product.images,
-      features: product.features,
-      shipping: product.shipping,
-      returns: product.returns,
-    })
+    .update(toDatabaseProduct(product))
     .eq("id", id)
     .select()
     .single();

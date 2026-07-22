@@ -1,19 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
+import { ProductSchema } from "@/lib/validation/product";
 import {
   createProduct,
   updateProduct,
   deleteProduct,
 } from "@/lib/productRepository";
 
-import type { ProductInput } from "@/types/product-input";
-
+import type { ProductInput } from "@/lib/validation/product";
 export async function createProductAction(
   product: ProductInput
 ) {
-  await createProduct(product);
+  const validatedProduct = ProductSchema.parse(product);
+
+  await createProduct(validatedProduct);
 
   revalidatePath("/shop");
   revalidatePath("/admin");
@@ -24,7 +25,9 @@ export async function updateProductAction(
   id: number,
   product: ProductInput
 ) {
-  await updateProduct(id, product);
+  const validatedProduct = ProductSchema.parse(product);
+
+await updateProduct(id, validatedProduct);
 
   revalidatePath("/shop");
   revalidatePath("/admin");

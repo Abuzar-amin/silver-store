@@ -1,7 +1,11 @@
 "use client";
-
-import { useState } from "react";
-import type { Product } from "@/types/products";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import ImageUploader from "@/components/admin/ImageUploader";
+import {
+  ProductSchema,
+  type ProductInput,
+} from "@/lib/validation/product";import type { Product } from "@/types/products";
 import {
   createProductAction,
   updateProductAction,
@@ -21,112 +25,65 @@ interface ProductFormProps {
 export default function ProductForm({
   product,
 }: ProductFormProps) {
-  const [form, setForm] = useState({
-  name: product?.name ?? "",
-  description: product?.description ?? "",
-  material: product?.material ?? "925 Sterling Silver",
-  price: product?.price.toString() ?? "",
-  category: product?.category ?? "rings",
-  featured: product?.featured ?? false,
-  inStock: product?.inStock ?? true,
-  images:
-    product?.images.length
-      ? product.images
-      : [""],
-  features:
-    product?.features.length
-      ? product.features
-      : defaultFeatures,
-  shipping:
-    product?.shipping ?? "Free Delivery",
-  returns:
-    product?.returns ?? "30-Day Returns",
+  const {
+  register,
+  control,
+  handleSubmit,
+  reset,
+  formState: { errors, isSubmitting },
+} = useForm<ProductInput>({
+  resolver: zodResolver(ProductSchema),
+
+  defaultValues: {
+    name: product?.name ?? "",
+    description: product?.description ?? "",
+    material: product?.material ?? "925 Sterling Silver",
+    price: product?.price ?? 0,
+    category: product?.category ?? "rings",
+    featured: product?.featured ?? false,
+    inStock: product?.inStock ?? true,
+    images:
+      product?.images.length
+        ? product.images
+        : [],
+    features:
+      product?.features.length
+        ? product.features
+        : defaultFeatures,
+    shipping:
+      product?.shipping ?? "Free Delivery",
+    returns:
+      product?.returns ?? "30-Day Returns",
+  },
 });
+ 
 
- const [imagesText, setImagesText] = useState(
-  product?.images.join("\n") ?? ""
-);
 
-const [featuresText, setFeaturesText] = useState(
-  product?.features.join("\n") ??
-    defaultFeatures.join("\n")
-);
 
-  function updateField(
-    field: keyof typeof form,
-    value: string | boolean | string[]
-  ) {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
 
-    const images = imagesText
-      .split("\n")
-      .map((url) => url.trim())
-      .filter(Boolean);
 
-    const features = featuresText
-      .split("\n")
-      .map((feature) => feature.trim())
-      .filter(Boolean);
 
-    try {
-      const productData = {
-  name: form.name,
-  description: form.description,
-  material: form.material,
-  price: Number(form.price),
-  category: form.category,
-  featured: form.featured,
-  inStock: form.inStock,
-  images,
-  features,
-  shipping: form.shipping,
-  returns: form.returns,
-};
 
-if (product) {
-  await updateProductAction(product.id, productData);
-
-  alert("Product updated successfully!");
-} else {
-  await createProductAction(productData);
-
-  alert("Product created successfully!");
-
-  setForm({
-    name: "",
-    description: "",
-    material: "925 Sterling Silver",
-    price: "",
-    category: "rings",
-    featured: false,
-    inStock: true,
-    images: [""],
-    features: defaultFeatures,
-    shipping: "Free Delivery",
-    returns: "30-Day Returns",
-  });
-
-  setImagesText("");
-  setFeaturesText(defaultFeatures.join("\n"));
-}
-    } catch (error: any) {
-      console.error(error);
-      alert(JSON.stringify(error, null, 2));
+ async function onSubmit(productData: ProductInput) {
+  try {
+    if (product) {
+      await updateProductAction(product.id, productData);
+      alert("Product updated successfully!");
+    } else {
+      await createProductAction(productData);
+      alert("Product created successfully!");
+      reset();
     }
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong.");
   }
+}
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-8 rounded-2xl border bg-white p-8 shadow-sm"
     >
       {/* General Information */}
@@ -142,13 +99,15 @@ if (product) {
           </label>
 
           <input
-            value={form.name}
-            onChange={(e) =>
-              updateField("name", e.target.value)
-            }
-            className="w-full rounded-lg border p-3"
-            required
-          />
+  {...register("name")}
+  className="w-full rounded-lg border p-3"
+/>
+
+{errors.name && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.name.message}
+  </p>
+)}
         </div>
 
         <div>
@@ -157,14 +116,16 @@ if (product) {
           </label>
 
           <textarea
-            rows={5}
-            value={form.description}
-            onChange={(e) =>
-              updateField("description", e.target.value)
-            }
-            className="w-full rounded-lg border p-3"
-            required
-          />
+  rows={5}
+  {...register("description")}
+  className="w-full rounded-lg border p-3"
+/>
+
+{errors.description && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.description.message}
+  </p>
+)}
         </div>
 
         <div>
@@ -173,12 +134,9 @@ if (product) {
           </label>
 
           <input
-            value={form.material}
-            onChange={(e) =>
-              updateField("material", e.target.value)
-            }
-            className="w-full rounded-lg border p-3"
-          />
+  {...register("material")}
+  className="w-full rounded-lg border p-3"
+/>
         </div>
       </section>
 
@@ -197,10 +155,7 @@ if (product) {
 
             <input
               type="number"
-              value={form.price}
-              onChange={(e) =>
-                updateField("price", e.target.value)
-              }
+              {...register("price", { valueAsNumber: true })}
               className="w-full rounded-lg border p-3"
               required
             />
@@ -212,10 +167,7 @@ if (product) {
             </label>
 
             <select
-              value={form.category}
-              onChange={(e) =>
-                updateField("category", e.target.value)
-              }
+              {...register("category")}
               className="w-full rounded-lg border p-3"
             >
               <option value="rings">Rings</option>
@@ -247,10 +199,7 @@ if (product) {
             </label>
 
             <input
-              value={form.shipping}
-              onChange={(e) =>
-                updateField("shipping", e.target.value)
-              }
+              {...register("shipping")}
               className="w-full rounded-lg border p-3"
             />
           </div>
@@ -261,10 +210,7 @@ if (product) {
             </label>
 
             <input
-              value={form.returns}
-              onChange={(e) =>
-                updateField("returns", e.target.value)
-              }
+              {...register("returns")}
               className="w-full rounded-lg border p-3"
             />
           </div>
@@ -278,34 +224,46 @@ if (product) {
           Features
         </h2>
 
-        <textarea
-          rows={6}
-          value={featuresText}
-          onChange={(e) =>
-            setFeaturesText(e.target.value)
-          }
-          className="w-full rounded-lg border p-3"
-          placeholder="One feature per line"
-        />
+        <Controller
+  control={control}
+  name="features"
+  render={({ field }) => (
+    <textarea
+      rows={6}
+      value={field.value.join("\n")}
+      onChange={(e) =>
+        field.onChange(
+          e.target.value
+            .split("\n")
+            .map((x) => x.trim())
+            .filter(Boolean)
+        )
+      }
+      className="w-full rounded-lg border p-3"
+      placeholder="One feature per line"
+    />
+  )}
+/>
       </section>
 
       {/* Images */}
 
       <section className="space-y-5">
-        <h2 className="text-lg font-semibold">
-          Product Images
-        </h2>
+  <h2 className="text-lg font-semibold">
+    Product Images
+  </h2>
 
-        <textarea
-          rows={6}
-          value={imagesText}
-          onChange={(e) =>
-            setImagesText(e.target.value)
-          }
-          className="w-full rounded-lg border p-3"
-          placeholder="One image URL per line"
-        />
-      </section>
+  <Controller
+    control={control}
+    name="images"
+    render={({ field }) => (
+      <ImageUploader
+        value={field.value}
+        onChange={field.onChange}
+      />
+    )}
+  />
+</section>
 
       {/* Options */}
 
@@ -318,13 +276,7 @@ if (product) {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={form.featured}
-              onChange={(e) =>
-                updateField(
-                  "featured",
-                  e.target.checked
-                )
-              }
+              {...register("featured")}
             />
             Featured
           </label>
@@ -332,13 +284,7 @@ if (product) {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={form.inStock}
-              onChange={(e) =>
-                updateField(
-                  "inStock",
-                  e.target.checked
-                )
-              }
+              {...register("inStock")}
             />
             In Stock
           </label>
